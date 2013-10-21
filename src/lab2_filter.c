@@ -27,7 +27,7 @@
   * @retval None
   */
 void init_moving_average(struct Moving_Average *moving_average, uint32_t size) {
-	moving_average->index = 0;
+	moving_average->index = 0;																																									//Initialize all struct members to 0
 	moving_average->average = 0;
 	uint32_t i;
 	for (i=0; i<sizeof(moving_average->moving_values)/sizeof(moving_average->average); i++) {
@@ -42,12 +42,12 @@ void init_moving_average(struct Moving_Average *moving_average, uint32_t size) {
   * @retval None
   */
 void insert_value(struct Moving_Average *moving_average, float new_value) {
-	if (moving_average->index == sizeof(moving_average->moving_values)/sizeof(moving_average->average)-1) {
-		moving_average->index = 0;
+	if (moving_average->index == sizeof(moving_average->moving_values)/sizeof(moving_average->average)-1) {			//Check if we need to wraparound index
+		moving_average->index = 0;																																								//If so, set to 0
 	} else {
-		moving_average->index++;
+		moving_average->index++;																																									//Otherwise, increment like normal
 	}
-	moving_average->moving_values[moving_average->index] = new_value;
+	moving_average->moving_values[moving_average->index] = new_value;																						//Insert new value, overwriting oldest one
 }
 
 /**
@@ -57,12 +57,12 @@ void insert_value(struct Moving_Average *moving_average, float new_value) {
   * @retval None
   */
 void calculate_average(struct Moving_Average *moving_average) {
-	uint32_t i = 0;
+	uint32_t i = 0;																																															//Initialize internal variables
 	double sum = 0;
-	for (i=0; i<sizeof(moving_average->moving_values)/sizeof(moving_average->average); i++) {
-		sum += moving_average->moving_values[i];
+	for (i=0; i<sizeof(moving_average->moving_values)/sizeof(moving_average->average); i++) {										//Loop through entire filter array
+		sum += moving_average->moving_values[i];																																	//Add all elements together
 	}
-	moving_average->average = sum/(sizeof(moving_average->moving_values)/sizeof(moving_average->average));
+	moving_average->average = sum/(sizeof(moving_average->moving_values)/sizeof(moving_average->average));			//Return algrbraic average
 }
 
 /**

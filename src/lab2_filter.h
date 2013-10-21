@@ -21,7 +21,7 @@
   */ 
 
 #ifndef MOVING_AVERAGE_FILTER_SIZE
-#define MOVING_AVERAGE_FILTER_SIZE 16
+#define MOVING_AVERAGE_FILTER_SIZE 16																				//Size of moving average circular filter window
 #endif
 
 #ifndef MOVING_AVERAGE_STRUCT

@@ -77,20 +77,20 @@ void init_adc() {
 	ADC_InitTypeDef adc_init_s;
 	ADC_CommonInitTypeDef adc_common_init_s;
 	
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE); 										//Enable clock to ADC
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE); 																//Enable clock to ADC
 										
-	adc_common_init_s.ADC_Mode = ADC_Mode_Independent;											//indp. mode, operates independently from ADC2/3, no simultaneous conversions
-	adc_common_init_s.ADC_Prescaler = ADC_Prescaler_Div2;										//set clock freq for adc
-	adc_common_init_s.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled;				//not in multi mode, dont need direct memory access, wont affect performance significantly
-	adc_common_init_s.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;	//delay between two sampling phases (5 cycles is minimum allowed)
-	ADC_CommonInit(&adc_common_init_s);																			//points to struct that holds ADC config info for peripherals
+	adc_common_init_s.ADC_Mode = ADC_Mode_Independent;																	//indp. mode, operates independently from ADC2/3, no simultaneous conversions
+	adc_common_init_s.ADC_Prescaler = ADC_Prescaler_Div2;																//set clock freq for adc
+	adc_common_init_s.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled;										//not in multi mode, dont need direct memory access, wont affect performance significantly
+	adc_common_init_s.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;							//delay between two sampling phases (5 cycles is minimum allowed)
+	ADC_CommonInit(&adc_common_init_s);																									//points to struct that holds ADC config info for peripherals
 	
 	adc_init_s.ADC_Resolution = ADC_Resolution_12b;
-	adc_init_s.ADC_ScanConvMode = DISABLE;																	//disable so we do one at a time
-	adc_init_s.ADC_ContinuousConvMode = DISABLE;														//Only poll once, when we want to
-	adc_init_s.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;		//internal trigger via software, not external trigger
-	adc_init_s.ADC_DataAlign = ADC_DataAlign_Right;													//12 bit adc value pushed into 16 bit register, specify left or right align
-	adc_init_s.ADC_NbrOfConversion = 1;																			//only using 1 ADC, indicates number of conversion to be done by sequencer
+	adc_init_s.ADC_ScanConvMode = DISABLE;																							//disable so we do one at a time
+	adc_init_s.ADC_ContinuousConvMode = DISABLE;																				//Only poll once, when we want to
+	adc_init_s.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;								//internal trigger via software, not external trigger
+	adc_init_s.ADC_DataAlign = ADC_DataAlign_Right;																			//12 bit adc value pushed into 16 bit register, specify left or right align
+	adc_init_s.ADC_NbrOfConversion = 1;																									//only using 1 ADC, indicates number of conversion to be done by sequencer
 	ADC_Init(ADC1, &adc_init_s);
 	
 	ADC_Cmd(ADC1, ENABLE); //Enable ADC
@@ -105,8 +105,8 @@ void init_adc() {
   */
 void init_temp_sensor() {
 	ADC_TempSensorVrefintCmd(ENABLE); //Enable temperature sensor
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_16, 1, ADC_SampleTime_480Cycles); //Configure temperature sensor channel,  
-																																							 //rank (1 since in ind. mode, in case of group regular channel conv), and the sample freq.
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_16, 1, ADC_SampleTime_480Cycles); 				//Configure temperature sensor channel,  
+																																											//rank (1 since in ind. mode, in case of group regular channel conv), and the sample freq.
 }
 
 /**

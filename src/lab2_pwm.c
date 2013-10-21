@@ -36,31 +36,31 @@ static void do_pwm(struct PWM *pwm) {
 	
 	//Setting brighness direction mode (increaseing/decreasing)
 	if (pwm->pwm_count >= pwm->max_intensity) {
-		pwm->pwm_count = 0; 																					//At the end of each cycle, reset cycle counter
+		pwm->pwm_count = 0; 																													//At the end of each cycle, reset cycle counter
 		if (pwm->intensity >= pwm->max_intensity) {
-			pwm->up_down = 0; 																					//If we are at the brightest, start dimming
+			pwm->up_down = 0; 																													//If we are at the brightest, start dimming
 		} else if (pwm->intensity <= 0) {
-			pwm->up_down = 1; 																					//If we are at the dimmest, start brightening
+			pwm->up_down = 1; 																													//If we are at the dimmest, start brightening
 		}
 	} else {
 		pwm->pwm_count++; //Increment cycle counter
 	}
 	
 	//Checking change-brighness flag
-	if (!pwm->change_intensity_count) { 														//Check if we need to change the brightness level this iteraiton
+	if (!pwm->change_intensity_count) { 																						//Check if we need to change the brightness level this iteraiton
 		if (pwm->up_down) {
-			pwm->intensity++; 																					//Increment brightness if we're on an upwards metaphorical trajectory
+			pwm->intensity++; 																													//Increment brightness if we're on an upwards metaphorical trajectory
 		} else {
-			pwm->intensity--; 																					//Otherwise, decrement
+			pwm->intensity--; 																													//Otherwise, decrement
 		}
 		pwm->real_intensity = (pow(pwm->intensity, PWM_LED_MAPPING_POWER)/pow(pwm->max_intensity, PWM_LED_MAPPING_POWER));
 	}
 	
 	//Setting change-brighness flag
 	if (pwm->change_intensity_count == (uint32_t)(pwm->pwm_frequency * ((float)pwm->pulse_speed / 1000) / pwm->max_intensity)) {
-		pwm->change_intensity_count = 0; 															//Check if we've stayed at the curent brightness for long enough
+		pwm->change_intensity_count = 0; 																							//Check if we've stayed at the curent brightness for long enough
 	} else {
-		pwm->change_intensity_count++; 																//Otherwise, increment counter and check next iteration
+		pwm->change_intensity_count++; 																								//Otherwise, increment counter and check next iteration
 	}
 }
 
