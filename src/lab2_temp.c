@@ -34,8 +34,6 @@
   */
 
 static float get_temperature(uint16_t raw_value) {
-	
-	
 	return((((VDD*((float)raw_value)/4096 - V25)/AVSLOPE)+25));										//Take raw ADC value, scale it from 0-4095 to 0-3V
 }																																								//Return this scaled value after sensor calibration function
 
@@ -43,15 +41,15 @@ static float get_temperature(uint16_t raw_value) {
   * @brief  Turns on the selected LED (modulo 8)
 	* @note   This function takes an LED number (from 0-7) and maps it to
             a base-4 system in the following manner:
-            led_number -> LED
-                 0     ->  0
-                 1     ->  0
-                 2     ->  1
-                 3     ->  1
-                 4     ->  2
-                 5     ->  2
-                 6     ->  3
-                 7     ->  3
+            led_number -> LED (Pin)
+                 0     ->  12
+                 1     ->  12
+                 2     ->  13
+                 3     ->  13
+                 4     ->  14
+                 5     ->  14
+                 6     ->  15
+                 7     ->  
 	* @param  led_number: LED number to turn on.
   * @retval float: Converted temperature in degrees C.
   */
@@ -100,7 +98,6 @@ void rotate_led(uint32_t led_number) {
 	* @param  *moving_average: Pointer to a Moving_Average filter struct
   * @retval None
   */
-
 void init_temp_reader(struct Temperature_Reader *temperature_reader, uint32_t size) {
 	struct Moving_Average moving_average;
 	temperature_reader->moving_average = moving_average;

@@ -32,56 +32,6 @@ uint32_t mode = 0;
 uint32_t button_count = 0;
 uint32_t desired_button_count = 0;
 
-/* Private Function Definitions ------------------------------------------------------------------*/
-
-static void set_mode(uint32_t delay, uint32_t temp_systick_freq, uint32_t pwm_systick_freq);
-
-/* Public Functions ---------------------------------------------------------*/
-
-/** @defgroup Public_Functions
-  * @{
-  */
-
-/**
-  * @brief  Main entry point
-	* @param  None
-  * @retval int: Error code
-  */
-int main()
-{
-	struct Temperature_Reader temperature_reader; 																//Define moving average filter struct
-	struct PWM pwm; 																															//Define PWM struct
-
-	SysTick_Config(SystemCoreClock / TEMP_SYSTICK_FREQ); 													//Set default systick interrupt frequency (mode 0 - temperature)
-	
-	init_pushbutton(); 																														//Initialize pushbutton
-	init_leds(); 																																	//Initialize LEDs
-	init_adc(); 																																	//Initialize ADC
-	init_temp_sensor(); 																													//Initialize temperature sensor
-	
-	init_temp_reader(&temperature_reader, MOVING_AVERAGE_FILTER_SIZE); 						//initialize temp sensor
-	init_pwm(&pwm, PWM_SPEED, PWM_FREQUENCY, PWM_MAX_INTENSITY); 									//Initialize PWM struct
-	
-	desired_button_count = DEBOUNCE_TIME * TEMP_SYSTICK_FREQ / 1000;
-
-	while(1) {
-		if (ticks) {																																//If the interrupt flag has been set
-			ticks = 0;																																//Reset interrupt flag
-			set_mode(DEBOUNCE_TIME, TEMP_SYSTICK_FREQ, PWM_SYSTICK_FREQ); 						//Read pushbutton and set operation mode accordingly
-			if (!mode) { 																															//If we're in the default (temperature mode)
-				read_temp(&temperature_reader);
-				printf("Average: %f\n", temperature_reader.moving_average.average); 		//Print current and averaged temperature values
-			} else { 																																	//Otherwise, we're in the PWM mode
-				pwm_isr(&pwm);																													//Set PWM service flag
-			}
-		}
-	}
-}
-
-/**
-  * @}
-  */
-
 /* Private Functions ---------------------------------------------------------*/
 
 /** @defgroup Private_Functions
@@ -126,6 +76,52 @@ static void set_mode(uint32_t delay, uint32_t temp_systick_freq, uint32_t pwm_sy
   */
 void SysTick_Handler(void) {
 	ticks++;																																			//Increment flag to signal interrupt
+}
+
+/**
+  * @}
+  */
+
+/* Public Functions ---------------------------------------------------------*/
+
+/** @defgroup Public_Functions
+  * @{
+  */
+
+/**
+  * @brief  Main entry point
+	* @param  None
+  * @retval int: Error code
+  */
+int main()
+{
+	struct Temperature_Reader temperature_reader; 																//Define moving average filter struct
+	struct PWM pwm; 																															//Define PWM struct
+
+	SysTick_Config(SystemCoreClock / TEMP_SYSTICK_FREQ); 													//Set default systick interrupt frequency (mode 0 - temperature)
+	
+	init_pushbutton(); 																														//Initialize pushbutton
+	init_leds(); 																																	//Initialize LEDs
+	init_adc(); 																																	//Initialize ADC
+	init_temp_sensor(); 																													//Initialize temperature sensor
+	
+	init_temp_reader(&temperature_reader, MOVING_AVERAGE_FILTER_SIZE); 						//initialize temp sensor
+	init_pwm(&pwm, PWM_SPEED, PWM_FREQUENCY, PWM_MAX_INTENSITY); 									//Initialize PWM struct
+	
+	desired_button_count = DEBOUNCE_TIME * TEMP_SYSTICK_FREQ / 1000;
+
+	while(1) {
+		if (ticks) {																																//If the interrupt flag has been set
+			ticks = 0;																																//Reset interrupt flag
+			set_mode(DEBOUNCE_TIME, TEMP_SYSTICK_FREQ, PWM_SYSTICK_FREQ); 						//Read pushbutton and set operation mode accordingly
+			if (!mode) { 																															//If we're in the default (temperature mode)
+				read_temp(&temperature_reader);
+				printf("Average: %f\n", temperature_reader.moving_average.average); 		//Print current and averaged temperature values
+			} else { 																																	//Otherwise, we're in the PWM mode
+				pwm_isr(&pwm);																													//Set PWM service flag
+			}
+		}
+	}
 }
 
 /**
